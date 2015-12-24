@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    
+    <!--[if lte IE 8]>
+        <script src="excanvas.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+<p id="aa">aaa</p>
+<a href="#" class="btn btn-primary" id="summit">go</a>
+<br/>
+<a href="#" class="btn btn-primary" id="delete">back</a>
+<br/>
+<a href="#" class="btn btn-primary" id="update">update</a>
+<div class="container hidden" id="chart" >
+    <script src="js/Chart.js"></script>
+    <div style="width:80%">
+        <div>
+            <canvas id="canvas" height="450" width="600"></canvas>
+        </div>
+    </div>
+
+    <div id="canvas-holder">
+        <canvas id="chart-area" width="500" height="500"> </canvas>
+    </div>
+</div>
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="js/jquery.min.js" charset="UTF-8"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js" charset="UTF-8"></script>
+<script src="js/jquery.inview.js" charset="UTF-8"></script>
+<script type="text/javascript">
+
+    $("#summit").click(function(){
+        // alert("dd");
+        //var html = $(this).parent().html();
+        //html = cleanSource(html);
+        //$("#source-modal pre").text(html);
+        //$("#source-modal").modal();
+        //$("#abc").modal();
+        window.myLine.addData([40, 60], "August");
+
+    });
+    $("#delete").click(function(){
+        window.myLine.removeData();
+    });
+    $("#update").click(function(){
+        window.myLine.datasets[0].points[2].value = 50;
+// Would update the first dataset's value of 'March' to be 50
+        window.myLine.update();
+// Calling update now animates the position of March from 90 to 50.
+
+    });
+    $('#canvas').click(function(evt){
+        var activePoints = window.myLine.getPointsAtEvent(evt);
+        var aa = activePoints.pop();
+        alert('x:'+aa.x+',y:'+aa.y);
+        alert(aa.value);
+        // => activePoints is an array of points on the canvas that are at the same position as the click event.
+    });
+
+</script>
+<script>
+    var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+    var lineChartData = {
+        labels : ["January","February","March","April","May","June","July"],
+        datasets : [
+            {
+                label: "My First dataset",
+                fillColor : "rgba(220,220,220,0.2)",
+                strokeColor : "rgba(220,220,220,1)",
+                pointColor : "rgba(220,220,220,1)",
+                pointStrokeColor : "#fff",
+                pointHighlightFill : "#fff",
+                pointHighlightStroke : "rgba(220,220,220,1)",
+                data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+            },
+            {
+                label: "My Second dataset",
+                fillColor : "rgba(151,187,205,0.2)",
+                strokeColor : "rgba(151,187,205,1)",
+                pointColor : "rgba(151,187,205,1)",
+                pointStrokeColor : "#fff",
+                pointHighlightFill : "#fff",
+                pointHighlightStroke : "rgba(151,187,205,1)",
+                data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+            }
+        ]
+
+    }
+
+    var doughnutData = [
+        {
+            value: 300,
+            color:"#F7464A",
+            highlight: "#FF5A5E",
+            label: "Red"
+        },
+        {
+            value: 50,
+            color: "#46BFBD",
+            highlight: "#5AD3D1",
+            label: "Green"
+        },
+        {
+            value: 100,
+            color: "#FDB45C",
+            highlight: "#FFC870",
+            label: "Yellow"
+        },
+        {
+            value: 40,
+            color: "#949FB1",
+            highlight: "#A8B3C5",
+            label: "Grey"
+        },
+        {
+            value: 120,
+            color: "#4D5360",
+            highlight: "#616774",
+            label: "Dark Grey"
+        }
+
+    ];
+
+    function showLineChart(){
+        var ctx = document.getElementById("canvas").getContext("2d");
+        window.myLine = new Chart(ctx).Line(lineChartData, {
+            responsive: true
+        });
+
+        var ctx = document.getElementById("chart-area").getContext("2d");
+        window.myDoughnut = new Chart(ctx).Doughnut(doughnutData, {responsive : true});
+    }
+    var flag = 1;
+    $(document).ready(function () {
+        var graphInitDelay = 700;
+        $('#aa').bind('inview', function (event, visible) {
+            if (visible == true) {
+                $('#chart').removeClass("hidden");
+                $('#aa').unbind();
+                setTimeout(showLineChart,graphInitDelay);
+            }
+        });;
+
+    });
+
+</script>
+
+</body>
+
+</html>
