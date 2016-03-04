@@ -16,7 +16,8 @@ class CreateMomentsTable extends Migration
             $table->increments('id');
             $table->text('content');
             $table->integer('keep');
-            $table->integer('uid');
+            $table->integer('like');
+            $table->integer('user_id');
             $table->timestamps();
         });
     }

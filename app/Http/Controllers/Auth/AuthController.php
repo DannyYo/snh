@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Profile;
 use App\User;
 use Validator;
 use App\Http\Controllers\Controller;
@@ -61,11 +62,22 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+
+        $profile['username'] = '比克大魔王';
+        $profile['user_id'] = $user['id'];
+        $profile['sex'] = 0;
+        $profile['intro'] = '此人很二，没有啥好写的';
+        $profile['style'] = 'default';
+        $profile['avatar'] = 'img/nameless.png';
+        $profile['location'] = '宇宙 那美克星';
+        Profile::create($profile);
+
+        return $user;
     }
 
 

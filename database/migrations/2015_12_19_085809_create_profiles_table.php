@@ -20,7 +20,7 @@ class CreateProfilesTable extends Migration
             $table->string('intro');
             $table->string('avatar');
             $table->string('style');
-            $table->integer('uid');
+            $table->integer('user_id');
             $table->timestamps();
         });
     }

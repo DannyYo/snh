@@ -14,8 +14,8 @@ class CreateAtmeTable extends Migration
     {
         Schema::create('atme', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('uid');
-            $table->integer('mid');
+            $table->integer('user_id');
+            $table->integer('moment_id');
             $table->timestamps();
         });
     }

@@ -1,5 +1,5 @@
-@extends('app')
+@extends('home')
+@section('title', '登录')
 @section('content')
-@include('common.error-list')
 @include('common.login-form')
 @endsection

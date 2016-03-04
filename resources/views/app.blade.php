@@ -1,24 +1,6 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1">
-     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+@include('common.header')
+
     <title>SNH|运动分享网站</title>
-
-    <!-- Bootstrap darkly-->
-    <link href="/darkly/css/bootstrap.min.css" rel="stylesheet">
-
-
-      <link href="/css/bootstrap-datetimepicker.css" rel="stylesheet">
-      <link rel="stylesheet" href="/darkly/assets/css/custom.min.css">
-
-<!--[if lt IE 9]>
-    <script src="/darkly/js/respond-1.1.0.min.js"></script>
-    <script src="/darkly/js/html5shiv.js"></script>
-    <script src="/darkly/js/html5element.js"></script>
-<![endif]-->
 
 
 <!--    <link rel='stylesheet' href="/css/bootstrap.min.css" type='text/css' media='all'/>-->
@@ -26,11 +8,8 @@
 <!--    <script type='text/javascript' src="/js/all.js"></script>-->
     <link rel='stylesheet' href="/css/select2.css" type='text/css' media='all'/>
     <link rel="stylesheet" href="/css/font-awesome.min.css">
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="/js/jquery.min.js" charset="UTF-8"></script>
     <script src="/js/select2.full.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/darkly/js/bootstrap.min.js" charset="UTF-8"></script>
     <script src="/js/jquery.inview.js" charset="UTF-8"></script>
     <script type="text/javascript" src="/js/jquery-scrolltofixed.js"></script>
     <script type="text/javascript" src="/js/jquery.easing.1.3.js"></script>
@@ -155,5 +134,4 @@
     });
 </script>
 
-</body>
-</html>
+@include('common.footer')

@@ -1,62 +1,148 @@
-<script type='text/javascript' src='/js/city.js'/>
+@extends('home')
+@section('title', '个人信息')
+@section('content')
 @if($profile)
 <div class="well bs-component">
-    <form method="POST" action="/profile/update" class="form-horizontal">
+    <div class="col-lg-4 col-md-5 col-sm-6">
+        <div>
+                <img src="{{asset( $profile->avatar)}}"  height="170" width="250">
+        </div>
+        @if($profile->user_id == Auth::user()->id)
+        <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+                <a href="{{ url('avatar/upload')  }}">编辑头像</a>
+                <a href="{{ url('profile/'.$profile->id.'/edit')  }}">编辑资料</a>
+            </div>
+        </div>
+        @else
+            @if($profile->follow)
+            <a href="{{$profile->user_id}}" class="btn btn-default follow btn-success">已关注</a>
+            @else
+            <a href="{{$profile->user_id}}" class="btn btn-default follow">关注</a>
+            @endIf
+        <a href="/letter"><button class="btn btn-default letter" >私信</button></a>
+        @endIf
+    </div>
+    <form method="POST" action="/profile/update/{{$profile->id}}" class="form-horizontal">
         <fieldset>
             {!! csrf_field() !!}
             <div  class="form-group">
                 <label for="inputUsername" class="col-lg-2 control-label">Username</label>
                 <div class="col-lg-10">
-                    <input type="text" name="name" value="{{ $profile->username }}" class="form-control" placeholder="Username">
+                    <div class="form-control">{{ $profile->username }}</div>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-lg-2 control-label">Sex</label>
                 <div class="col-lg-10">
-                    <div class="radio">
-                        <label>
-                            <input name="sex" id="Male" value="Male" checked="" type="radio">
-                            Male
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input name="sex" id="Female" value="Female" type="radio">
-                            Female
-                        </label>
-                    </div>
+                    <div class="form-control">@if($profile->sex == 0) Male @else Female @endIf</div>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="select" class="col-lg-2 control-label">Location</label>
                 <div class="col-lg-10">
-                    <select class="form-control" id="select1" name="province">
-                        <option value="">please select</option>
-                    </select>
-                    <br>
-                    <select class="form-control" id="select2" name="city">
-                        <option value="">please select</option>
-                    </select>
+                    <div class="form-control">{{ $profile->location }}</div>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="textArea" class="col-lg-2 control-label">Introduction</label>
                 <div class="col-lg-10">
-                    <textarea class="form-control" rows="3" id="textArea" name="introduction">{{ $profile->intro }}</textarea>
-                    <span class="help-block">A longer block of help text that breaks onto a new line and may extend beyond one line.</span>
+                    <div class="form-control">{{ $profile->intro }}</div>
                 </div>
             </div>
 
             <div class="form-group">
-                <div class="col-lg-10 col-lg-offset-2">
-                    <button type="reset" class="btn btn-default">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Login</button>
+                <label class="col-lg-2 control-label">Style</label>
+                <div class="col-lg-10">
+                    <div class="form-control">{{ $profile->style }}</div>
                 </div>
             </div>
         </fieldset>
     </form>
 </div>
+            </div>
+        </section>
+    </div>
 @endIf
+@endSection
+@section('styles')
+<style>
+    .follow{
+        margin-top: 20px;
+    }
+    .letter{
+        margin-top: 20px;
+    }
+</style>
+@endSection
+@section('scripts')
+<script>
+    $("document").ready(function(){
+        var $follow = $('.follow');
+        $follow.on('click', function(e){
+//            alert('clock');
+            e.preventDefault();
+            var  $button = $(this);
+            var id;
+            if($button.hasClass('btn-success')){
+                var r = confirm("取消关注？");
+                if (r == true) {
+                    id = $(this).attr("href");
+//                console.log(id);
+                    likeOrNot(id,false)
+                    $button.removeClass('btn-success');
+                    $button.removeClass('btn-warning');
+                    $button.text('关注');
+                } else {
+                    return;
+                }
+            } else {
+                id = $(this).attr("href");
+//                console.log(id);
+                likeOrNot(id,true);
+//                    console.log('success');
+                $button.addClass('btn-success');
+                $button.text('已关注');
+            }
+        });
+        $follow.hover(function(){
+            $button = $(this);
+            if($button.hasClass('btn-success')){
+                $button.addClass('btn-warning');
+                $button.text('取消关注');
+            }
+        }, function(){
+            if($button.hasClass('btn-success')){
+                $button.removeClass('btn-warning');
+                $button.text('已关注');
+            }
+        });
+        function likeOrNot(id, type){ //type: true + false -
+            $.ajax({
+                type : 'GET',
+                url : "{{ url('users/follow')}}"+'?id='+id+'&type='+type,
+                dataType : 'json',
+                json : 'callback',
+                success : function(msg) {
+                    if(msg == 'success'){
+                        if(type){
+                            alert('已关注');
+                        }else
+                            alert('已取消关注');
+                    }else{
+                        alert('你已经关注该用户')
+                    }
+                },
+                error : function() {
+                    alert('信息读取失败提示!');
+                }
+            });
+        }
+    });
+</script>
+@endSection
+
+

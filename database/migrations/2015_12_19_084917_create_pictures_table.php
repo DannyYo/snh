@@ -15,7 +15,7 @@ class CreatePicturesTable extends Migration
         Schema::create('pictures', function (Blueprint $table) {
             $table->increments('id');
             $table->string('pic');
-            $table->integer('mid');
+            $table->integer('moment_id');
             $table->timestamps();
         });
     }
