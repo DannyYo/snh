@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Moment;
 use App\Picture;
+use App\User;
 use Emojione\Client;
 use Emojione\Ruleset;
 use Illuminate\Http\Request;

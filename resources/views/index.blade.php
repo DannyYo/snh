@@ -45,7 +45,7 @@
             <div class="wow fadeInLeft delay-05s">
                 <blockquote>
                     <p>可以在PC、各种移动设备上访问到我们。<br>
-                        不用下载APP直接扫二维码手机访问</p>
+                        不用下载APP直接扫二维码手机访问 => <img src="{{asset('QrCode.png')}}" width="200px"></p>
                 </blockquote>
             </div>
         </div>
