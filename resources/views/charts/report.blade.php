@@ -19,31 +19,39 @@
         </div>
     </div>
 </div>
+<div class="bs-docs-section">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-12">
+                <h4>理想体重为<span class="label label-default" id="idelw"></span></h4>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="progress progress-striped active">
+    <div class="progress-bar" id="wBar">还差一点加油</div>
+</div>
+<div class="nothing"></div>
     <div class="chart-container">
         <div id="js-carousel" class="canvas-holder hover-highlight carousel position-1"><canvas id="carousel-radar"></canvas><canvas id="carousel-bar"></canvas><canvas id="carousel-line"></canvas></div>
-    </div>
-
-    <div class="progress progress-striped active">
-        <div class="progress-bar" style="width: 45%">还差一点加油</div>
-        啊啊啊
     </div>
     <div class="bs-docs-section">
         <div class="page-header">
             <div class="row">
                 <div class="col-lg-12">
+                    <h4>你的体格指数【BMI】为<span class="label label-default" id="bmi"></span></h4>
                     <h4>理想体格指数【BMI】为<span class="label label-default">22</span></h4>
                 </div>
             </div>
         </div>
     </div>
-
-
         <canvas id="polar-area"></canvas>
 
 <div class="bs-docs-section">
     <div class="page-header">
         <div class="row">
             <div class="col-lg-12">
+                <h4>你的体脂肪率为<span class="label label-default" id="bodyfat"></span></h4>
                 <h4>体脂肪率判定基准参考</h4>
             </div>
         </div>
@@ -72,6 +80,52 @@
             </tr>
             </tbody>
         </table>
+<div class="bs-docs-section">
+    <div class="page-header">
+        <div class="row">
+            <div class="col-lg-12">
+                <h4>建议 :<br></h4>
+                <blockquote id="my_comment"></blockquote>
+            </div>
+        </div>
+    </div>
+</div>
+<!--log form-->
+<div class="modal fade" id="log-form">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                <h4 class="modal-title">登记</h4>
+            </div>
+            <div class="modal-body">
+                <p>看报告前，请输入今天的数据…</p>
+                <form id="form" onSubmit="return false">
+                    <div class="form-group">
+                        <label class="control-label" for="focusedInput">身高</label>
+                        <input name="height_cm" type="text" class="form-control"
+                               placeholder="PS.cm为单位哦ლ(╹◡╹ლ)" />
+                        <label class="control-label" for="focusedInput">体重</label>
+                        <input name="weight_kg" type="text" class="form-control"
+                               placeholder="PS.kg为单位哦ლ(╹◡╹ლ)" />
+                        <label class="control-label" for="focusedInput">腰围</label>
+                        <input name="waist_cm" type="text" class="form-control"
+                               placeholder="PS.cm为单位哦ლ(╹◡╹ლ)" />
+                        <input name="gender" value="MalePick" type="hidden" @if($profile->sex == 0) checked="checked" @endIf>
+                        <input name="gender" value="FemPick"  type="hidden" @if($profile->sex == 1) checked="checked" @endIf>
+                        <input name="bodyfat" type="hidden">
+                        <input name="bmi" type="hidden">
+                        <input name="idelw" type="hidden">
+                        <input  type="hidden" name="my_comment">
+                        <br>
+                        <button id="save" class="btn btn-primary">提交<(￣︶￣)↗[GO!]</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endSection
 @section('styles')
     <style type="text/css">
@@ -230,9 +284,30 @@
 @endSection
 @section('scripts')
 <script src="/js/Chart.js"></script>
+<script src="/js/my.js"></script>
+<script>
+    $("document").ready(function(){
+        var $logF = $('#log-form');
+            $logF.modal({backdrop: 'static', keyboard: false});
+        $logF.modal('show');
+        $("#save").click(function(){
+            caculat_body_fat(this.form);
+//            alert('ddd');
+            $logF.modal('hide');
+                var $f = $('#form')[0];
+                $("#bmi").text($f.bmi.value);
+            $("#bodyfat").text($f.bodyfat.value);
+            $("#idelw").text($f.idelw.value+"公斤");
+            $("#my_comment").text($f.my_comment.value);
+            var a = Math.abs($f.weight_kg.value - $f.idelw.value)/$f.weight_kg.value;
+            a = (a*100).toFixed(2)+"%";
+            console.log($f.weight_kg.value - $f.idelw.value);
+            $("#wBar").css("width", a);
+        });
+    })
+</script>
     <script>
         (function(){
-
             function $id(id, context) {
                 return $((context || document).getElementById(id))[0];
             }
@@ -279,61 +354,7 @@
                     },
                     chartInstances = [];
 
-                var data = {
-                    multiSets: {
-                        labels: ["January", "February", "March", "April", "May", "June", "July"],
-                        datasets: [
-                            {
-                                label: "My First dataset",
-                                fillColor: baseDataset.fill,
-                                strokeColor: baseDataset.stroke,
-                                pointColor: baseDataset.stroke,
-                                pointStrokeColor: "#fff",
-                                pointHighlightFill: "#fff",
-                                highlightFill: baseDataset.highlight,
-                                pointHighlightStroke: baseDataset.highlightStroke,
-                                data: [65, 59, 90, 81, 56, 55, 40]
-                            },
-                            {
-                                label: "My Second dataset",
-                                fillColor: overlayDataset.fill,
-                                strokeColor: overlayDataset.stroke,
-                                pointColor: overlayDataset.stroke,
-                                pointStrokeColor: "#fff",
-                                pointHighlightFill: "#fff",
-                                pointHighlightStroke: overlayDataset.highlightStroke,
-                                highlightFill: overlayDataset.highlight,
-                                data: [28, 48, 40, 19, 96, 27, 100]
-                            }
-                        ]
-                    },
-                    segments : [
-                        {
-                            value : 20,
-                            color: blue,
-                            highlight : Colour(blue, 10),
-                            label : "体重不足 (BMI<20)"
-                        },
-                        {
-                            value: 25,
-                            color : teal,
-                            highlight: Colour(teal, 10),
-                            label : "理想范围 (20~25)"
-                        },
-                        {
-                            value: 29,
-                            color: yellow,
-                            highlight : Colour(yellow, 10),
-                            label : "危险范围 (26~29)"
-                        },
-                        {
-                            value : 30,
-                            color: orange,
-                            highlight : Colour(orange, 10),
-                            label : "进入高危险范围 (>30)"
-                        }
-                    ]
-                }
+
 
 
                 var config = {
@@ -342,36 +363,115 @@
                         this.options.animation = true;
                     }
                 };
-                chartInstances.push(new Chart(contexts.radar).Radar(data.multiSets, config));
-                chartInstances.push(new Chart(contexts.bar).Bar(data.multiSets, config));
-                chartInstances.push(new Chart(contexts.line).Line(data.multiSets, config));
+                $.ajax({
+                    type : 'GET',
+                    url : "{{ url('users/getWeightData')}}", //'http://127.0.0.1/API/test/getData',
+                    dataType : 'json',
+                    json : 'callback',
+                    success : function(weights) {
+                        var days = weights['days'].reverse();
+                        weights = weights['data'].reverse();
+                        if(weights.length == 0)
+                        {
+                            console.log('no content');
+                            $(".nothing").html('没有数据啊，赶快记录今天的数据吧 ');
+                            return;
+                        }
+                        //-------
+                        var data = {
+                            multiSets: {
+                                labels: days,
+                                datasets: [
+                                    {
+                                        label: "My First dataset",
+                                        fillColor: overlayDataset.fill,
+                                        strokeColor: overlayDataset.stroke,
+                                        pointColor: overlayDataset.stroke,
+                                        pointStrokeColor: "#fff",
+                                        pointHighlightFill: "#fff",
+                                        pointHighlightStroke: overlayDataset.highlightStroke,
+                                        highlightFill: overlayDataset.highlight.highlightStroke,
+                                        data: weights
+                                    },
+//                            {
+//                                label: "My Second dataset",
+//                                    fillColor: baseDataset.fill,
+//                                    strokeColor: baseDataset.stroke,
+//                                    pointColor: baseDataset.stroke,
+//                                    pointStrokeColor: "#fff",
+//                                    pointHighlightFill: "#fff",
+//                                    highlightFill: baseDataset.highlight,
+//                                    pointHighlightStroke: baseDataset.highlightStroke,
+//                                data: [28, 48, 40, 19, 96, 27, 100]
+//                            }
+                                ]
+                            },
+                            segments : [
+                                {
+                                    value : 20,
+                                    color: blue,
+                                    highlight : Colour(blue, 10),
+                                    label : "体重不足 (<20)"
+                                },
+                                {
+                                    value: 25,
+                                    color : teal,
+                                    highlight: Colour(teal, 10),
+                                    label : "理想范围 (20~25)"
+                                },
+                                {
+                                    value: 29,
+                                    color: yellow,
+                                    highlight : Colour(yellow, 10),
+                                    label : "危险范围 (26~29)"
+                                },
+                                {
+                                    value : 30,
+                                    color: orange,
+                                    highlight : Colour(orange, 10),
+                                    label : "进入高危险范围 (>30)"
+                                }
+                            ]
+                        }
+                        chartInstances.push(new Chart(contexts.radar).Radar(data.multiSets, config));
+                        chartInstances.push(new Chart(contexts.bar).Bar(data.multiSets, config));
+                        chartInstances.push(new Chart(contexts.line).Line(data.multiSets, config));
 
-                var ctx = document.getElementById("polar-area").getContext("2d");
-                window.myPolarArea = new Chart(ctx).PolarArea(data.segments, {responsive : true});
+                        var ctx = document.getElementById("polar-area").getContext("2d");
+                        window.myPolarArea = new Chart(ctx).PolarArea(data.segments, {responsive : true});
 
-                var iteratePosition = (function(){
-                    var position = 1;
+                        var iteratePosition = (function(){
+                            var position = 1;
 
-                    return function(){
-                        position++;
-                        return (position > chartInstances.length) ? position = 1 : position;
-                    };
-                })();
+                            return function(){
+                                position++;
+                                return (position > chartInstances.length) ? position = 1 : position;
+                            };
+                        })();
 
-                var carousel = $id('js-carousel');
+                        var carousel = $id('js-carousel');
 
-                helpers = Chart.helpers;
+                        helpers = Chart.helpers;
 
-                helpers.addEvent(carousel, 'click', function(){
-                    var positionPrefix = 'position-',
-                        carouselPosition = iteratePosition(),
-                        chartToScrollTo = chartInstances[carouselPosition-1];
+                        helpers.addEvent(carousel, 'click', function(){
+                            var positionPrefix = 'position-',
+                                carouselPosition = iteratePosition(),
+                                chartToScrollTo = chartInstances[carouselPosition-1];
 
-                    this.className = this.className.replace(new RegExp(positionPrefix+'[1-6]'), positionPrefix+carouselPosition);
+                            this.className = this.className.replace(new RegExp(positionPrefix+'[1-6]'), positionPrefix+carouselPosition);
 
-                    chartToScrollTo.clear();
-                    chartToScrollTo.render();
+                            chartToScrollTo.clear();
+                            chartToScrollTo.render();
+                        });
+
+                        //------
+                    },
+                    error : function() {
+                        alert('信息读取失败提示!');
+                    }
                 });
+
+
 
             })();
 

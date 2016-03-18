@@ -213,4 +213,10 @@ class ProfileController extends Controller
             ]);
     }
 
+    public function friendList(Request $request)
+    {
+        $follows = Auth::user()->follows;
+        return view('profile.list',compact('follows'));
+    }
+
 }

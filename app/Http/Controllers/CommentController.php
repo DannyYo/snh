@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Comment;
+use App\Helper;
+use App\Moment;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -57,8 +59,8 @@ class CommentController extends Controller
                 ->withInput();
         }
         Comment::create($input);
-
-        return redirect('moment');
+        Helper::set_msg(Moment::find($input['moment_id'])->user->id, 1);
+        return redirect('moment/'.$input['moment_id']);
     }
 
     /**

@@ -112,12 +112,14 @@ class MomentController extends Controller
     public function show($id)
     {
         //
-        $moment = Moment::find($id);
+        $moment = Moment::where(array('id'=>$id))->with('comments.user', 'picture')->first();
         if(is_null($moment)){
             abort(404); //APP_DEBUG=false可以把错误信息去掉
         }
 //        return $user; //view('moments.show',compact('user'));
-        return view('moments.show')->with('moment',$moment);
+        $client = new Client(new Ruleset());
+        $client->imagePathPNG = '/img/emoji/';
+        return view('moments.show',compact('moment'),compact('client'));
 //        return Moment::findOrFail($id);
     }
 
@@ -179,7 +181,7 @@ class MomentController extends Controller
     {
         $ids =array();
         foreach(Auth::user()->follows as $follow){
-        $ids[]= $follow->follow_id;
+        $ids[]= $follow->id;
         }
         $moments = Moment::whereIn('user_id',$ids)->with('comments.user', 'picture')->orderby('created_at', 'desc')->paginate(10);;
         $client = new Client(new Ruleset());

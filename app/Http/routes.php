@@ -31,6 +31,7 @@ Route::post('password/reset', 'Auth\PasswordController@postReset');
 //Route::get('profile','ProfileController@index');//Route::get('home','IndexController@index'); //
 //Route::post('profile/update','ProfileController@update');
 //Route::get('profile/destroy/{id}/','ProfileController@destroy');
+Route::get('profile/friendList','ProfileController@friendList');
 Route::resource('profile', 'ProfileController');
 Route::get('profile/{id}','ProfileController@show');
 //头像上传
@@ -45,6 +46,13 @@ Route::get('moment','MomentController@index');
 Route::get('moment/{id}','MomentController@show');
 Route::get('moments/hot','MomentController@hot');
 Route::get('moments/relative','MomentController@relative');
+//发布活动
+Route::get('activity/attendedActivities','ActivityController@attendedActivities');
+Route::get('activity/create','ActivityController@create');
+Route::post('activity/store','ActivityController@store');
+Route::post('activity/imgUpload','ActivityController@imgUpload');
+Route::get('activity','ActivityController@index');
+Route::get('activity/{id}','ActivityController@show');
 //动态评论
 Route::post('comment/store','CommentController@store');
 //私信
@@ -64,14 +72,13 @@ Route::get('users/hc','UserController@hc');
 Route::get('users/likeOrNot','UserController@likeOrNot');
 Route::get('users/keepOrNot','UserController@keepOrNot');
 Route::get('users/follow','UserController@follow');
+Route::get('users/join','UserController@join');
 
-//Route::get('/', function () {
-//    return view('welcome');
-//});
-Route::get('users/{id}','UserController@show');
-//Route::get('user/{name?}', function ($name = 'ano') {
-//    return 'Hello '.$name;
-//});
+
+Route::get('user/msgList1','UserController@msgList1');
+Route::get('user/msgList2','UserController@msgList2');
+Route::get('user/msgList3','UserController@msgList3');
 Route::get('user/edit/{id}','UserController@edit');
 Route::post('user/update','UserController@update');
-//Route::get('article/edit/{id}','ArticleController@edit')->where('id', '[0-9]+');
+Route::get('user/getMsg','UserController@getMsg');
+Route::get('user/getLetter','UserController@getLetter');

@@ -28,7 +28,7 @@ return array(
 	 *
 	 * @type string
 	 */
-	'title' => 'Admin Panel',
+	'title' => 'SNH ',
 
 	/**
 	 * The path to your model config directory
@@ -69,6 +69,7 @@ return array(
 	 */
 	'menu' => array(
         'moments',
+        'users',
 		),
 
 	/**
@@ -137,7 +138,7 @@ return array(
 	 *
 	 * @type int
 	 */
-	'global_rows_per_page' => 10,
+	'global_rows_per_page' => 20,
 
 	/**
 	 * An array of available locale strings. This determines which locales are available in the languages menu at the top right of the Administrator

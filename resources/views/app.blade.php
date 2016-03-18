@@ -78,13 +78,8 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
                 <h4 class="modal-title">Login</h4>
             </div>
-            <div class="modal-body">
                 @include('common.error-list')
                 @include('common.login-form')
-            </div>
-            <div class="modal-footer">
-                <p>No account? Go to <a href="/auth/register">register</a></p>
-            </div>
         </div>
     </div>
 </div>

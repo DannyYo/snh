@@ -4,7 +4,7 @@
 <div id="validation-errors" style="display: none"></div>
 <div class="panel panel-success">
     <div class="panel-heading">
-        <h3 class="panel-title">与XXX的聊天</h3>
+        <h3 class="panel-title">与{{ $to->name }}的聊天</h3>
     </div>
     <div class="panel-footer">
         <div class='form-group'>
@@ -14,7 +14,9 @@
       @include('common.emoji-picker')
     </span>
                 {!! Form::open( [ 'url' => ['letter/send'], 'method' => 'POST', 'id' => 'send', 'files' => true ] ) !!}
-                <input type='text' class='form-control' id="saytext" placeholder="说点什么吧~">
+                <input type='text' class='form-control' id="saytext" placeholder="说点什么吧~" name="content">
+                <input type="hidden" name="from" value="{{Auth::user()->id}}">
+                <input type="hidden" name="to" value="{{$to->id}}">
                 {!! Form::close() !!}
     <span class='input-group-btn'>
     <button class='btn btn-default' type='button' id="btn">回复</button>
@@ -22,19 +24,12 @@
             </div>
         </div>
     </div>
-    <div class="panel-body" style="height: 500px;overflow: hidden;">
-
+    <div class="panel-body" >
         <ul id="message">
-
-        </ul>
-        <ul class="pagination">
-            <li class="disabled"><a href="#">&laquo;</a></li>
-            <li class="active"><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">&raquo;</a></li>
+            @foreach($letters as $letter)
+            <li><blockquote @if($letter->fromUser->name == $to->name) class='blockquote-reverse' @endIf><p>{!! $client->shortnameToImage($letter->content) !!}</p><small>{{$letter->fromUser->name}}</small></blockquote></li>
+            @endForeach
+            {!! $letters->appends(array('to'=>$to->id))->render() !!}
         </ul>
     </div>
 
@@ -42,9 +37,12 @@
 @endSection
 @section('styles')
 <style type="text/css">
+    ul {
+        padding-left: 0px;
+    }
     li {
         text-decoration: none;
-        display: table-row;
+        display: block;
     }
 </style>
 @endSection
@@ -52,7 +50,42 @@
 <script type="text/javascript" src="/js/jquery.form.js"></script>
 <script type="text/javascript" src="/js/emojione.js"></script>
 <script>
-    $(document).ready(function() {
+    function get_letter(){
+//        console.log(window.msgData.type);
+        if(window.msgData){
+        if(window.msgData.status && window.msgData.type == 2){
+            var oMessage = document.getElementById("message");
+            var aLi = oMessage.getElementsByTagName("li");
+            $.getJSON("{{url('user/getLetter')}}"+'?take='+window.msgData.total, function (data) {
+                data = data.reverse();
+                $.each(data, function(){
+                    var oLi =document.createElement("li");/*创建li元素*/
+                    oLi.innerHTML =  "<blockquote class='blockquote-reverse'>"+
+                        "<p>"+emojione.shortnameToImage(this)+"</p>"+
+                        "<small>{{ $to->name }}</small>"+
+                        "</blockquote>";
+
+                    if(aLi.length>0)
+                    {
+                        oMessage.insertBefore(oLi,oMessage.firstChild);
+                    }
+                    /*当前没有li时，追加li元素*/
+                    else{
+                        oMessage.appendChild(oLi);
+                    }
+                });
+            });
+        }
+        }
+        setTimeout(function () {  //调用自身循环6秒一次
+            get_letter();
+        }, 6000);
+    }
+</script>
+<script>
+    //轮询    有letter就差n条（取n条最新letter的API）
+     $(document).ready(function() {
+         get_letter();
         var options = {
 //            beforeSubmit: showRequest,
             success:showResponse,
@@ -98,7 +131,6 @@
                     + response.message +'</strong><div>');
                 $("#validation-errors").show('slow');
             }
-
         }
     });
 </script>

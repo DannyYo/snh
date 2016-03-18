@@ -104,6 +104,26 @@ class User extends Model implements AuthenticatableContract,
     }
     public function follows()
     {
-        return $this->hasManyThrough('App\Follow', $this, 'id', 'user_id');
+        return $this->belongsToMany('App\User','follows','user_id','follow_id');
+    }
+//    public function follows()
+//    {
+//        return $this->hasManyThrough('App\Follow', $this, 'id', 'user_id');
+//    }
+    public function to()
+    {
+        return $this->hasManyThrough('App\letter', $this, 'id', 'to');
+    }
+    public function from()
+    {
+        return $this->hasManyThrough('App\letter', $this, 'id', 'from');
+    }
+    public function activities()
+    {
+        return $this->hasMany('App\Activity');
+    }
+    public function attendedActivities()
+    {
+        return $this->belongsToMany('App\Activity','user_activities');
     }
 }

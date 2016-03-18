@@ -6,9 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Letter extends Model
 {
-    public function user()
+    protected  $fillable = [
+        'from',
+        'to',
+        'content'
+    ];
+    public function fromUser()
     {
-        return $this->belongsTo('App\User');  
+        return $this->belongsTo('App\User','from');
     }
-
+    public function toUser()
+    {
+        return $this->belongsTo('App\User','to');
+    }
 }

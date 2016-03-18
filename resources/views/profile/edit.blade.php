@@ -4,32 +4,32 @@
 <div class="well bs-component">
     {!! Form::open( array('url' => route('profile.update',$profile->id), 'method' => 'put', 'class' => 'form-horizontal') ) !!}
             <div  class="form-group">
-                <label for="inputUsername" class="col-lg-2 control-label">Username</label>
+                <label for="inputUsername" class="col-lg-2 control-label">昵称</label>
                 <div class="col-lg-10">
-                    <input type="text" name="username" value="{{ $profile->username }}" class="form-control" placeholder="Username">
+                    <input type="text" name="username" value="{{ $profile->username }}" class="form-control" placeholder="昵称">
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="col-lg-2 control-label">Sex</label>
+                <label class="col-lg-2 control-label">性别</label>
                 <div class="col-lg-10">
                     <div class="radio">
                         <label>
                             <input name="sex" id="Male" value="0" type="radio" @if($profile->sex == 0) checked="checked" @endIf >
-                            Male
+                              男
                         </label>
                     </div>
                     <div class="radio">
                         <label>
                             <input name="sex" id="Female" value="1"  type="radio" @if($profile->sex == 1) checked="checked" @endIf>
-                            Female
+                              女
                         </label>
                     </div>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="select" class="col-lg-2 control-label">Location</label>
+                <label for="select" class="col-lg-2 control-label">地方</label>
                 <div class="col-lg-10">
                     <select class="form-control" id="select1" name="province">
                         <option value="{{$profile->province}}">{{ $profile->province or '请选择' }}</option>
@@ -42,15 +42,15 @@
             </div>
 
             <div class="form-group">
-                <label for="textArea" class="col-lg-2 control-label">Introduction</label>
+                <label for="textArea" class="col-lg-2 control-label">自我介绍</label>
                 <div class="col-lg-10">
                     <textarea class="form-control" rows="3" id="textArea" name="intro">{{ $profile->intro }}</textarea>
-                    <span class="help-block">A longer block of help text that breaks onto a new line and may extend beyond one line.</span>
+                    <span class="help-block">一个好的自我介绍可以帮你交到更多朋友哦~~</span>
                 </div>
             </div>
 
             <div class="form-group" id="style">
-                <label class="col-lg-2 control-label">Style</label>
+                <label class="col-lg-2 control-label">网站风格</label>
                 <div class="col-lg-10">
                     <div class="radio">
                         <label>
@@ -75,8 +75,7 @@
 
             <div class="form-group">
                 <div class="col-lg-10 col-lg-offset-2">
-                    <button type="reset" class="btn btn-default">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button type="submit" class="btn btn-primary">更新</button>
                 </div>
             </div>
         {!!Form::close()!!}

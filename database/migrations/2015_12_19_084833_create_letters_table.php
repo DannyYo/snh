@@ -14,7 +14,7 @@ class CreateLettersTable extends Migration
     {
         Schema::create('letters', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('form');
+            $table->integer('from');
             $table->integer('to');
             $table->text('content');
             $table->timestamps();

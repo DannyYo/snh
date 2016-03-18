@@ -20,44 +20,37 @@
             @else
             <a href="{{$profile->user_id}}" class="btn btn-default follow">关注</a>
             @endIf
-        <a href="/letter"><button class="btn btn-default letter" >私信</button></a>
+        <a href="/letter?to={{$profile->user_id}}"><button class="btn btn-default letter" >私信</button></a>
         @endIf
     </div>
     <form method="POST" action="/profile/update/{{$profile->id}}" class="form-horizontal">
         <fieldset>
             {!! csrf_field() !!}
             <div  class="form-group">
-                <label for="inputUsername" class="col-lg-2 control-label">Username</label>
+                <label for="inputUsername" class="col-lg-2 control-label">昵称</label>
                 <div class="col-lg-10">
                     <div class="form-control">{{ $profile->username }}</div>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="col-lg-2 control-label">Sex</label>
+                <label class="col-lg-2 control-label">性别</label>
                 <div class="col-lg-10">
-                    <div class="form-control">@if($profile->sex == 0) Male @else Female @endIf</div>
+                    <div class="form-control">@if($profile->sex == 0) 男 @else 女 @endIf</div>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="select" class="col-lg-2 control-label">Location</label>
+                <label for="select" class="col-lg-2 control-label">地方</label>
                 <div class="col-lg-10">
                     <div class="form-control">{{ $profile->location }}</div>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="textArea" class="col-lg-2 control-label">Introduction</label>
+                <label for="textArea" class="col-lg-2 control-label">自我介绍</label>
                 <div class="col-lg-10">
                     <div class="form-control">{{ $profile->intro }}</div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-lg-2 control-label">Style</label>
-                <div class="col-lg-10">
-                    <div class="form-control">{{ $profile->style }}</div>
                 </div>
             </div>
         </fieldset>
@@ -92,7 +85,7 @@
                 if (r == true) {
                     id = $(this).attr("href");
 //                console.log(id);
-                    likeOrNot(id,false)
+                    followOrNot(id,false)
                     $button.removeClass('btn-success');
                     $button.removeClass('btn-warning');
                     $button.text('关注');
@@ -102,7 +95,7 @@
             } else {
                 id = $(this).attr("href");
 //                console.log(id);
-                likeOrNot(id,true);
+                followOrNot(id,true);
 //                    console.log('success');
                 $button.addClass('btn-success');
                 $button.text('已关注');
@@ -120,7 +113,7 @@
                 $button.text('已关注');
             }
         });
-        function likeOrNot(id, type){ //type: true + false -
+        function followOrNot(id, type){ //type: true + false -
             $.ajax({
                 type : 'GET',
                 url : "{{ url('users/follow')}}"+'?id='+id+'&type='+type,

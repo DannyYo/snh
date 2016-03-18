@@ -2,14 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Comment;
 use App\Follow;
+use App\Helper;
 use App\Keep;
+use App\Letter;
 use App\Moment;
 use App\Like;
+use App\UserActivity;
 use App\Weight;
 use Carbon\Carbon;
+use Emojione\Client;
+use Emojione\Ruleset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 
 class UserController extends Controller
 {
@@ -38,7 +45,7 @@ class UserController extends Controller
         $days = [];
         foreach(Auth::user()->weights()->orderby('created_at', 'desc')->take(6)->get() as $weight){
             $arr[] = $weight->weight;
-            $days[] = $weight->created_at->format('l') == Carbon::now()->format('l') ? 'today': $weight->created_at->format('l');
+            $days[] = $weight->created_at == Carbon::now() ? 'today': $weight->created_at->format('d M');
         }
 
         return response()->json([
@@ -61,7 +68,8 @@ class UserController extends Controller
 
     public function report()
     {
-        return view('charts.report');
+        $profile = Auth::user()->profile;
+        return view('charts.report', compact('profile'));
     }
     public function hc()
     {
@@ -117,5 +125,89 @@ class UserController extends Controller
         }
         $msg = 'success';
         return response()->json($msg);
+    }
+    public function getMsg(Request $request)
+    {
+        $uid = Auth::user()->id;
+        $redis = Redis::connection('default');
+        $msg = json_decode($redis->get('usermsg'.$uid),true);
+        if ($msg) {
+            if ($msg['comment']['status']) {
+                $msg['comment']['status'] = 0; //设置为已读
+                $redis->set('usermsg'.$uid,json_encode($msg));
+                return response()->json(array(
+                    'status' => 1,
+                    'total' => $msg['comment']['total'],
+                    'type' => 1
+                ));
+            }
+
+            if ($msg['letter']['status']) {
+                $msg['letter']['status'] = 0;
+                $redis->set('usermsg'.$uid,json_encode($msg));
+                return response()->json(array(
+                    'status' => 1,
+                    'total' => $msg['letter']['total'],
+                    'type' => 2
+                ));
+            }
+
+            if ($msg['atme']['status']) {
+                $msg['atme']['status'] = 0;
+                $redis->set('usermsg'.$uid,json_encode($msg));
+                return response()->json(array(
+                    'status' => 1,
+                    'total' => $msg['atme']['total'],
+                    'type' => 3
+                ));
+            }
+        }
+        return response()->json(array('status' => 0));
+    }
+
+    public function getLetter(Request $request)
+    {
+        Helper::set_msg(Auth::user()->id, 2,true);
+        $data = [];
+        foreach(Auth::user()->to()->orderby('created_at', 'desc')->take($request->get('take'))->get() as $letter){
+            $data[] = $letter->content;
+        }
+        return response()->json($data);
+    }
+    public function join(Request $request)
+    {
+        $id =(int) $request->get('id');
+        $type = $request->get('type');
+        if($type == 'true')
+        {
+            UserActivity::create(array('user_id'=>Auth::user()->id,'activity_id'=>$id));
+        }else{
+            UserActivity::get()->where('user_id',Auth::user()->id)->where('activity_id',$id)->first()->delete();
+        }
+        $msg = 'success';
+        return response()->json($msg);
+    }
+    public function msgList1(Request $request)
+    {
+        $ids =array();
+        foreach(Auth::user()->moments as $moment){
+            $ids[]= $moment->id;
+        }
+        $msgs = Comment::whereIn('moment_id',$ids)->orderby('created_at', 'desc')->paginate(10);
+        return view('profile.msgList1',compact('msgs'));
+    }
+    public function msgList2(Request $request)
+    {
+        $client = new Client(new Ruleset());
+        $client->imagePathPNG = '/img/emoji/';
+        $msgs = Letter::where('to',Auth::user()->id)->with('fromUser')->orderby('created_at', 'desc')->paginate(10);
+        return view('profile.msgList2',compact('msgs'),compact('client'));
+    }
+    public function msgList3(Request $request)
+    {
+        $client = new Client(new Ruleset());
+        $client->imagePathPNG = '/img/emoji/';
+        $msgs = Moment::where('user_id',1)->orderby('created_at', 'desc')->paginate(10);
+        return view('profile.msgList3',compact('msgs'),compact('client'));
     }
 }

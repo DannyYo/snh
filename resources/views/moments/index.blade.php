@@ -24,8 +24,8 @@
     </div>
     <div class="panel-body">
         <p>
-            {!! $client->shortnameToImage($moment->content) !!}
-            <i class="fa fa-ellipsis-h"></i>
+            {!! App\Helper::toHTML(mb_substr($client->shortnameToImage($moment->content),0,300)) !!}
+            <a href="/moment/{{ $moment->id }}" class="fa fa-ellipsis-h"></a>
         </p>
     </div>
     <div class="panel-footer">
