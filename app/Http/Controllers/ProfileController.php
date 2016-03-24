@@ -193,11 +193,16 @@ class ProfileController extends Controller
         $tarW = $request->get('tarW');
         $tarH = $request->get('tarH');
         $src = strstr($request->get('src'),'uploads');
+//        dd($src);
         $img_r = imagecreatefromjpeg($src);
         $dst_r = ImageCreateTrueColor( $tarW, $tarH );
         imagecopyresampled($dst_r,$img_r,0,0,$request->get('x'),$request->get('y'),
             $tarW,$tarH,$request->get('w'),$request->get('h'));
         $avatar = 'uploads/'.$request->user()->id.'/avatar/'.rand(1000,9999).'.png';
+        $desPath = 'uploads/'.$request->user()->id.'/avatar/';
+        if(!is_dir($desPath))
+            mkdir($desPath,0777,true);
+
         if(imagejpeg($dst_r,$avatar) ){
             $request->user()->profile->avatar = $avatar;
             $request->user()->profile->save();

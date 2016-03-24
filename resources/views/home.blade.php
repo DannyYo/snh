@@ -46,7 +46,7 @@
 <body>
 <!--   navbar   -->
 @include('common.navbar')
-
+@include('common.likenshare')
 <!--contain-->
 <div id="top"></div>
 <div class="container">

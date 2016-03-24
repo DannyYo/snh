@@ -99,10 +99,10 @@
             <A href="javascript:food('腐竹');">腐竹</A> <A href="javascript:food('胡萝卜');">胡萝卜</A>
             <A href="javascript:food('鸡蛋');">鸡蛋</A> <A href="javascript:food('鸡血');">鸡血</A>
             <A href="javascript:food('煎饼');">煎饼</A></div>
-
-        <div class="csjg">
-            <b>您查询的食物热量如下所示：</b><br /><div id="showresult" class="tarea">答案显示区域</div><span>热量单位换算：1大卡=1千卡=1000卡路里=4.184千焦=4184焦耳热量</span>
-        </div>
+            <br /><b>您查询的食物热量如下所示：</b><br />
+        <blockquote class="csjg">
+            <div id="showresult" class="tarea">答案显示区域</div><small>热量单位换算：1大卡=1千卡=1000卡路里=4.184千焦=4184焦耳热量</small>
+        </blockquote>
             </div>
     </div>
     <div class="tab-pane fade" id="profile">
@@ -154,10 +154,10 @@
                     value="130">溜狗</OPTION> <OPTION
                     value="240">郊游</OPTION> </SELECT> 进行了 <INPUT class="input_tx" id="txtTime" onfocus="this.value='';" type="text" value="1">小时
             <INPUT class="btn btn-primary btn-sm" onclick="exercise();" type="submit" value="提交"></div>
-
-        <div class="csjg">
-            <b>您的正常体重范围如下所示：</b><br /><div id="showresult1" class="tarea">答案显示区域</div><span>热量单位换算：1大卡=1千卡=1000卡路里=4.184千焦=4184焦耳热量</span>
-        </div>
+            <br /><b>您的正常体重范围如下所示：</b><br />
+        <blockquote class="csjg">
+            <div id="showresult1" class="tarea">答案显示区域</div><small>热量单位换算：1大卡=1千卡=1000卡路里=4.184千焦=4184焦耳热量</small>
+        </blockquote>
         </div>
     </div>
 </div>
